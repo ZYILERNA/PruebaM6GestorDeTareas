@@ -12,6 +12,72 @@
 </head>
 <body>
     <h1>Gestor de Tareas</h1>
-    <script></script>
+    <p id="reloj">00:00:00</p>
+    <button id="botonfrase">Frase</button>
+    <p id="frase"></p>
+    <input type="text" id="inputTarea" placeholder="Introduce una tarea">
+    <button id="botonAdd">Añadir</button>
+    <ul id="listaTareas"></ul>
+    <p id="saludo"> </p>
+    <script>
+        let nombre = localStorage.getItem('nombre');
+        if(nombre === null) {
+            const regex = /\d/;
+            do {
+                nombre = prompt('¿Cómo te llamas?');
+                if(regex.test(nombre)) {
+                    alert('No puedes introducir números en tu nombre');
+                }
+            } while (regex.test(nombre));
+            localStorage.setItem('nombre', nombre);
+        }
+        document.getElementById('saludo').textContent = 'Bienvenido, ' + nombre;
+        setInterval(function() {
+            const hora = new Date();
+            const reloj = String(hora.getHours()).padStart(2, '0') + ':' + String(hora.getMinutes()).padStart(2, '0') + ':' + String(hora.getSeconds()).padStart(2, '0');
+            console.log('Reloj: ' + reloj);
+            document.getElementById('reloj').textContent = reloj;
+        }, 1000);
+        const frases = [
+            ['motivación', '¡Cada día es una nueva oportunidad!'],
+            ['humor', 'Me estan explotando ayuda d:']
+        ];
+        // Math.random() → número entre 0 y 1
+        // * frases.length → lo escala al tamaño del array
+        // Math.floor() → lo redondea hacia abajo (entero)
+        document.getElementById("botonfrase").addEventListener('click', function() {
+            const indice = Math.floor(Math.random() * frases.length);
+            document.getElementById("frase").textContent = frases[indice][0] + ': ' + frases[indice][1];
+        });
+
+        //Parte 3: Información y Lógica con Objetos Nativos.
+       document.getElementById('botonAdd').addEventListener('click', function() {
+        const texto = document.getElementById('inputTarea').value;
+        const li = document.createElement('li');
+        const botonEliminar = document.createElement('button');
+        //Para dar contenido al elemento li y button
+        li.textContent = texto;
+        botonEliminar.textContent = 'Eliminar';
+        
+        //Poner el boton dentro del li
+        li.appendChild(botonEliminar);
+
+        //Insertar el li en el ul
+        document.getElementById('listaTareas').appendChild(li);
+        li.addEventListener('click', function() {
+            console.log('Tarea clickada: ' + texto);
+        });
+
+        // Limpìar input
+        document.getElementById('inputTarea').value = '';
+
+        // Evento para eliminar la tarea
+        botonEliminar.addEventListener('click', function(e) {
+            e.stopPropagation(); //← esto es obligatorio para el ejercicio
+            li.remove();
+        });
+
+    });
+</script>
 </body>
 </html>
